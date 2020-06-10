@@ -22,7 +22,7 @@ function allLinksHaveTitles() {
 const processor = unified()
   .use(RemarkParse as any, { commonmark: true, pedantic: true }) // type decl doesn't have options
   .use(RemarkStringify, {
-    bullet: "*",
+    bullet: "-",
     emphasis: "*",
     listItemIndent: "1",
     rule: "-",
