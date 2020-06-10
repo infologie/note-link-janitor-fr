@@ -1,58 +1,78 @@
-# note-link-janitor
+# note-link-janitor-fr
 
-This script reads in a folder of Markdown files, notes all the [[wiki-style links]] between them, then adds a special "backlinks" section which lists passages which reference a given file.
+`note-link-janitor` est un script créé par Andy Matuschak qui lit un dossier de fichiers Markdown, relève tous les [[liens de type wiki]] entre ces fichiers, puis ajoute une section spéciale intitulée "Backlinks" qui liste les passages faisant référence à un fichier donné.
 
-For example, this text might get added to `Sample note.md`:
+Ce dépôt offre une traduction de la documentation du script, ainsi qu'une localisation française sous la forme d'une variante intitulée `note-link-janitor-fr`.
+
+Le principe du script est le suivant. Dans un fichier `Note A.md`, le texte suivant sera ajouté :
 
 ```
 ## Backlinks
-* [[Something that links here]]
-    * The block of text in the referencing note which contains the link to [[Sample note]].
-    * Another block in that same note which links to [[Sample note]].
-* [[A different note that links here]]
-    * This is a paragraph from another note which links to [[Sample note]].
+- [[Note B]]
+    - Un passage de la note B qui contient un lien vers [[Note A]].
+    - Un autre passage de la même note B qui renvoie également vers [[Note A]].
+- [[Note C]]
+    - Un passage d'une autre note qui renvoie vers [[Note A]].
 ```
 
-The script is idempotent; on subsequent runs, _it will update that backlinks section in-place_.
+Le script est idempotent ; lorsqu'il est exécuté à nouveau, _il met à jour les rétroliens sur place_.
 
-The backlinks section will be initially inserted at the end of the file. If there happens to be a HTML-style `<!-- -->` block at the end of your note, the backlinks will be inserted before that block.
+La section contenant les rétroliens est insérée à la fin du fichier. Si votre note se termine par un bloc de commentaire HTML `<!-- -->`, les rétroliens sont insérés avant.
 
-## Assumptions/warnings
+## Postulats/avertissements
 
-1. Links are formatted `[[like this]]`.
-2. Note titles are inferred from the first line of each note, which is assumed to be formatted as a heading, i.e. `# Note title`.
-3. All `.md` files are siblings; the script does not currently recursively traverse subtrees (though that would be a simple modification if you need it; see `lib/readAllNotes.ts`)
-4. The backlinks "section" is defined as the AST span between `## Backlinks` and the next heading tag (or `<!-- -->` tag). Any text you might add to this section will be clobbered. Don't append text after the backlinks list without a heading in between! (I like to leave my backlinks list at the end of the file)
+1. Les liens sont formatés `[[comme ceci]]`.
+2. Les titres des notes sont déduits de la première ligne de chaque note, qui est supposée être formatée comme un titre, c'est-à-dire `# Titre de la note`.
+3. Tous les fichiers `.md` sont considérés comme étant au même niveau ; dans sa version actuelle, le script ne parcourt pas récursivement une arborescence de fichiers (bien que ce soit une modification assez simple à réaliser si vous en avez besoin ; voir `lib/readAllNotes.ts`)
+4. La section des rétroliens est définie comme l'intervalle AST entre `## Backlinks` et la balise d'en-tête suivante (ou bien `<!-- -->`). Tout texte que vous pourriez ajouter à cette section sera supprimé. N'ajoutez pas de texte après la liste des rétroliens sans intervertir un titre entre les deux !
 
-### This is FYI-style open source
+### *FYI-style open source*
 
-This is FYI-style open source. I'm sharing it for interested parties, but without any stewardship commitment. Assume that my default response to issues and pull requests will be to ignore or close them without comment. If you do something interesting with this, though, [please let me know](mailto:andy@andymatuschak.org).
+Ce script est partagé sans aucun engagement de maintenance. Les signalements de bugs et les *pull requests* seront ignorées ou fermées sans commentaire. C'est valable pour le dépôt d'origine, ainsi que pour cette traduction. Toutefois, si vous faites quelque chose d'intéressant avec ce script, [faites-le savoir à son auteur](mailto:andy@andymatuschak.org).
 
-## Usage
+## Utiliser la variante francophone
 
-To install a published release, run:
+Sur ce dépôt, j'ai modifié le fichier `updateBacklinks.ts` pour traduire le titre de la section `## Backlinks` en `## Rétroliens`. J'ai également changé le marqueur de liste, à l'origine l'astérisque, en tiret.
+
+Pour installer cette variante :
+
+```
+yarn global add @arthurperret/note-link-janitor-fr
+```
+
+Ensuite, pour l'exécuter :
+
+```
+note-link-janitor-fr chemin/vers/le/dossier
+```
+
+## Utiliser du script d'origine
+
+Pour installer le script d'Andy Matuschak :
 
 ```
 yarn global add @andymatuschak/note-link-janitor
 ```
 
-Then to run it (note that it will modify your `.md` files _in-place_; you may want to make a backup!):
+Ensuite, pour l'exécuter (attention, cela modifiera vos fichiers `.md` *sur place* ; pensez à faire des sauvegardes au cas où !):
 
 ```
-note-link-janitor path/to/folder/containing/md/files
+note-link-janitor chemin/vers/le/dossier
 ```
 
-That will run it once; you'll need to create a cron job or a launch daemon to run it regularly.
+Ceci exécute le script une fois. Pour l'exécuter de manière régulière, vous devrez créer une tâche planifiée avec `cron` ou autre service de type daemon.
 
-It's built to run against Node >=12, so you may need to upgrade or swap your runtime version.
+Le script est conçu pour fonctionner avec Node >=12, vous devrez donc peut-être mettre à jour votre version d'exécution ou la remplacer.
 
-## Building a local copy
+## Fabriquer une copie locale
+
+Clonez [le dépôt d'Andy Matuschak](https://github.com/andymatuschak/note-link-janitor). Installez [Yarn](https://classic.yarnpkg.com/fr/docs/install/). Lancez les commandes suivantes :
 
 ```
 yarn install
 yarn run build
 ```
 
-## Future work
+## Projets
 
-In the future, I intend to expand this project to monitor for broken links, orphans, and other interesting hypertext-y predicates.
+Surveillez le dépôt d'origine, Andy Matuschak ayant exprimé l'intention d'étendre ce projet au suivi des liens morts ou orphelins, ainsi qu'à d'autres phénomènes hypertextuels.
